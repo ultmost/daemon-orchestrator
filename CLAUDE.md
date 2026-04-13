@@ -83,7 +83,22 @@ EVERY user message --> Daemon analyzes:
   14. No skill covers?  --> Daemon acts directly
 ```
 
-## 4. PERSISTENT MEMORY
+## 4. HOW SKILLS WORK
+
+Skills are `.md` files in `~/.claude/skills/daemon/`. Claude Code automatically loads files from the skills directory into context.
+
+When routing activates a skill:
+1. Claude reads the skill's frontmatter (name, triggers, description)
+2. Claude follows the skill's Process and Critical Rules sections
+3. After the skill completes, protocols run (Auto-Verify, Auto-Review, etc.)
+
+If a skill file doesn't exist, Claude falls back to acting directly without specialized instructions.
+
+To add a new skill: create a `.md` file in `~/.claude/skills/daemon/` with the same format (frontmatter + sections) and add it to the routing table in section 3.
+
+To remove a skill: delete the file and remove its entry from the routing table.
+
+## 5. PERSISTENT MEMORY
 
 <!-- CUSTOMIZE: Set your memory path -->
 Memory location: `~/daemon-memory/`
@@ -93,13 +108,13 @@ Memory location: `~/daemon-memory/`
 - Read `session-state.md` for pending items from previous sessions
 - Flush `session-state.md` MANDATORY before ending/compacting
 
-## 5. PROJECT ISOLATION
+## 6. PROJECT ISOLATION
 
 <!-- CUSTOMIZE: Add your projects -->
 - NEVER mix projects. Each has its own APIs, keys, servers
 - Before any server command: confirm WHICH project, WHICH server
 
-## 6. AUTOMATIC PROTOCOLS
+## 7. AUTOMATIC PROTOCOLS
 
 - **Daily Brief**: Dobby runs at start of every session
 - **ProofShot**: Automatic after any frontend delivery
@@ -108,13 +123,13 @@ Memory location: `~/daemon-memory/`
 - **Circuit Breaker**: 3x same error --> STOP with diagnostic
 - **Memory Flush**: session-state.md before ending session
 
-## 7. TOOL HIERARCHY
+## 8. TOOL HIERARCHY
 
 - WebFetch (simple) --> Playwright CLI (extract) --> MCP Browser (complex)
 - NEVER use MCP Browser for something WebFetch handles
 - NEVER navigate manually when an API exists
 
-## 8. MCP SERVERS
+## 9. MCP SERVERS
 
 <!-- CUSTOMIZE: Add your MCP servers -->
 ```

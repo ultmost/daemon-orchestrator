@@ -76,6 +76,84 @@ These skills were built for a specific solo-developer workflow. They may not fit
 
 > **You can delete any optional skill** without breaking the system. Just remove the file and its entry from the routing table in CLAUDE.md.
 
+### A note on names
+
+The Harry Potter naming is the original author's preference. If you find it unprofessional for your context, rename them. The system works the same with any names:
+
+| Original | Neutral alternative |
+|----------|-------------------|
+| Hermione | frontend-builder |
+| Neville | backend-builder |
+| Minerva | code-reviewer |
+| Severus | security-auditor |
+| Dobby | daily-brief |
+| Hedwig | deep-researcher |
+
+The names are just file names and references in CLAUDE.md. A find-and-replace takes 2 minutes.
+
+### What a skill looks like (full example)
+
+Every skill is a markdown file with frontmatter and structured instructions. Here's `minerva.md` (code review) in full:
+
+```markdown
+---
+name: minerva
+description: Adversarial code review in 3 phases - spec compliance, code quality, evidence
+triggers:
+  - code review
+  - review the code
+  - before commit
+  - before merge
+  - PR review
+  - refactor
+auto_trigger: after any build by hermione or neville
+---
+
+# Minerva - Code Review (Adversarial)
+
+> Reviews code in 3 phases with an adversarial posture. Finds what others miss.
+
+## 3-Phase Review
+
+### Phase 1: Spec Compliance
+- Does the code do what was asked?
+- Are all requirements met?
+- Any missing edge cases?
+
+### Phase 2: Code Quality
+- Logic errors, performance issues, maintainability
+- Code smells, unnecessary complexity
+- Naming conventions, consistency
+- Dead code, unused imports
+
+### Phase 3: Evidence
+- Verify claims with actual code (don't trust summaries)
+- Check that tests actually test what they claim
+- Verify build passes
+
+## Critical Rules
+- Be ADVERSARIAL. Your job is to find problems, not approve code
+- Never rubber-stamp. If everything looks perfect, look harder
+- Report findings with specific file:line references
+- Grade: PASS / PASS WITH NOTES / FAIL
+```
+
+This is the actual content Claude reads when Minerva activates. No hidden logic. What you see is what Claude gets.
+
+### Lite Setup (start here)
+
+Don't want all 17 skills? Start with these 5. They cover 80% of a developer's daily workflow:
+
+| Skill | Why it's essential |
+|-------|-------------------|
+| **Hermione** | Frontend work |
+| **Neville** | Backend work |
+| **Minerva** | Code review before committing |
+| **Circuit Breaker** (protocol) | Prevents infinite error loops |
+| **Memory system** (errors.md + learnings.md) | Prevents repeating mistakes |
+
+To install lite: run `setup.sh`, then delete every skill file you don't need from `~/.claude/skills/daemon/` and remove its entry from the routing table in `~/.claude/CLAUDE.md`.
+
 ---
 
 ## Protocols
@@ -111,6 +189,16 @@ none_match?         -> acts directly
 ```
 
 This isn't magic routing. It's a priority list in the system prompt that Claude follows. It works well for clear-cut requests and sometimes needs a nudge for ambiguous ones.
+
+### When routing fails
+
+Routing can be ambiguous. What happens when you say "fix this page's API call" (frontend or backend?):
+
+- **Claude picks one.** Usually the dominant context wins (if you're in a `.tsx` file, Hermione activates)
+- **You can override.** Say "use Neville for this" or "treat this as a backend task"
+- **If Claude acts generically** without activating a skill, say: "check your routing table" and it will re-evaluate
+
+This isn't a solved problem. Ambiguous prompts produce ambiguous routing. The fix is to be specific, or nudge when you notice Claude acting without a skill's rules.
 
 ---
 
