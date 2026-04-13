@@ -2,7 +2,7 @@
   <img src="docs/daemon-banner.svg" alt="Daemon Orchestrator" width="600">
 </p>
 
-<h3 align="center">A 17-agent AI orchestration system built on Claude Code.<br>One person. Full team output.</h3>
+<h3 align="center">Prompt architecture for Claude Code: 17 specialized roles, automatic quality gates, persistent memory.</h3>
 
 <p align="center">
   <a href="https://github.com/ultmost/daemon-orchestrator/stargazers"><img src="https://img.shields.io/github/stars/ultmost/daemon-orchestrator?style=flat-square&color=yellow" alt="Stars"></a>
@@ -16,17 +16,32 @@
 
 ## What is Daemon?
 
-Daemon is a **harness engineering** system that turns Claude Code into a full development team. Instead of writing code yourself, you build the structure that enables AI to write production-quality code with built-in review, security, and quality gates.
+Daemon is a **prompt architecture** for Claude Code that organizes your AI workflow into specialized roles with automatic quality gates. It's a structured set of instructions, skills, and memory templates that guide Claude to work like a coordinated team.
 
-**The core idea:** You are the architect. AI agents are the team. Daemon is the operating system that connects them.
+**The core idea:** You define the rules. Claude follows them. Skills handle specific domains. Protocols enforce quality.
 
 ```
-You speak naturally --> Daemon routes to the right agent --> Agent executes --> Auto-review pipeline runs --> Done
+You speak naturally --> CLAUDE.md routing matches context --> Skill instructions activate --> Quality protocols run
 ```
 
-### Built in production. Not in theory.
+### What this is
 
-This system was built while shipping 8+ production web apps simultaneously as a solo developer. Every protocol exists because something broke without it.
+- A **CLAUDE.md template** with routing logic for 17 specialized roles
+- **Skill files** (.md) that give Claude domain-specific instructions and rules
+- **Protocol definitions** for automatic verify, review, and error prevention
+- **Memory templates** for persistent context across sessions
+- A **setup script** that installs everything in one command
+
+### What this is NOT
+
+- Not a runtime, daemon process, or background service
+- Not a CLI tool or executable
+- Not enforced by code. It's enforced by Claude following well-structured instructions
+- Not magic. Claude can still ignore instructions. The quality of your results depends on how well you customize the prompts for your workflow
+
+### Why it works anyway
+
+Claude Code loads `~/.claude/CLAUDE.md` as system instructions every session. Well-structured instructions with clear triggers, rules, and processes produce dramatically better results than ad-hoc prompting. This system was built iteratively while shipping multiple production apps. Every protocol exists because something broke without it.
 
 ---
 
@@ -334,19 +349,22 @@ Ad research    --> George
 
 ## Design Philosophy
 
+### Prompt Architecture > Runtime
+This system doesn't enforce behavior through code. It enforces behavior through well-structured instructions that Claude follows consistently. Think of it as an operating manual, not an operating system. The value is in the **structure**, not in automation magic.
+
 ### Harness Engineering
-Your job is not to write code. Your job is to build the **harness** that allows AI to write code well:
+The concept (coined by OpenAI, validated by Anthropic): your job is not to write code. Your job is to build the **harness** that guides AI to write code well:
 - Rules for how AI should work (CLAUDE.md)
-- Automatic review system (Minerva, Severus)
-- Tests that validate output (Auto-Verify)
+- Review instructions (Minerva, Severus)
+- Verification steps (Auto-Verify)
 - Organized context (memory, skills)
 - Guardrails (circuit breaker, isolation)
 
-### Absorb > Install
-After evaluating 60+ repos and tools: our setup covers 80%+ of the ecosystem. New tools only enter if they fill a **real** gap. Cherry-pick ideas, don't stack tools.
+### Cherry-Pick, Don't Stack
+This system was built by absorbing ideas from many tools and repos, not by installing all of them. New tools only enter if they fill a real gap. The best approach is to take what works from Daemon and adapt it to your workflow.
 
-### One Person, Full Team
-The entire system is designed for a solo developer shipping multiple production apps simultaneously. Every agent, protocol, and integration exists to multiply one person's output.
+### Solo Developer Focus
+Designed for one person shipping multiple projects. Every skill and protocol exists to multiply individual output by reducing repeated mistakes and automating quality checks.
 
 ---
 

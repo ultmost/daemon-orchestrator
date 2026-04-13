@@ -46,9 +46,9 @@ echo "  [ok] Memory templates installed to $MEMORY_DIR/"
 
 # 7. Update memory path in CLAUDE.md
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' "s|~/claude-memory/|$MEMORY_DIR/|g" "$CLAUDE_DIR/CLAUDE.md"
+    sed -i '' "s|~/daemon-memory/|$MEMORY_DIR/|g" "$CLAUDE_DIR/CLAUDE.md"
 else
-    sed -i "s|~/claude-memory/|$MEMORY_DIR/|g" "$CLAUDE_DIR/CLAUDE.md"
+    sed -i "s|~/daemon-memory/|$MEMORY_DIR/|g" "$CLAUDE_DIR/CLAUDE.md"
 fi
 
 echo ""

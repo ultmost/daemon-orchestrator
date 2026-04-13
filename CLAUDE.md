@@ -86,7 +86,7 @@ EVERY user message --> Daemon analyzes:
 ## 4. PERSISTENT MEMORY
 
 <!-- CUSTOMIZE: Set your memory path -->
-Memory location: `~/claude-memory/`
+Memory location: `~/daemon-memory/`
 
 - Read `MEMORY.md` for complete memory index
 - Read `errors.md` and `learnings.md` BEFORE any technical task
