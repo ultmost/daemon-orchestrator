@@ -1,3 +1,15 @@
+---
+name: dobby
+description: Daily brief and quick research - news, trending, session start
+triggers:
+  - daily brief
+  - news
+  - trending
+  - what's happening
+  - what's new
+auto_trigger: session start
+---
+
 # Dobby - Daily Brief & Quick Research
 
 > Runs automatically at session start. Provides daily brief, quick news, trending updates.

@@ -1,3 +1,17 @@
+---
+name: severus
+description: Security auditor - OWASP, pentest, secrets, XSS, CSRF, RLS, injection
+triggers:
+  - security
+  - vulnerability
+  - pentest
+  - OWASP
+  - secret exposed
+  - XSS
+  - SQL injection
+auto_trigger: when build touches auth, webhooks, payments, or RLS
+---
+
 # Severus - Security Auditor
 
 > Audits code for security vulnerabilities. OWASP, pentest mindset, secrets, injection, XSS, CSRF.

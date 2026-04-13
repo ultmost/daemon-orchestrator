@@ -176,36 +176,87 @@ every_message -> daemon_analyzes:
 
 ## Quick Start
 
-### 1. Clone this repo
+### One-command install
 
 ```bash
 git clone https://github.com/ultmost/daemon-orchestrator.git
+cd daemon-orchestrator && bash setup.sh
 ```
 
-### 2. Copy the CLAUDE.md to your home directory
+The setup script:
+1. Copies `CLAUDE.md` to `~/.claude/CLAUDE.md` (backs up existing one)
+2. Copies all skills to `~/.claude/skills/daemon/`
+3. Creates memory directory at `~/daemon-memory/`
+4. Copies protocols and memory templates
 
-```bash
-cp daemon-orchestrator/CLAUDE.md ~/.claude/CLAUDE.md
+### How it works
+
+Claude Code loads `~/.claude/CLAUDE.md` as system instructions on every session. That file contains:
+- The routing table (which skill handles what)
+- Protocol definitions (auto-verify, auto-review, etc.)
+- Memory system location
+- Your project configs
+
+Skills are `.md` files with frontmatter that Claude reads as behavioral instructions. When you say "build me a landing page", Claude matches it against skill triggers and activates Hermione with all its rules and process.
+
+**You don't invoke skills manually.** You talk naturally. Daemon routes automatically.
+
+### After install
+
+1. Open `~/.claude/CLAUDE.md` and customize sections marked `<!-- CUSTOMIZE -->`
+2. Add your projects, MCP servers, and preferences
+3. Start Claude Code - it's now Daemon
+
+> **First session tip:** Say "hello" and Daemon will run the daily brief protocol (Dobby), check for pending items, and ask what you're working on.
+
+---
+
+## Example Session
+
+Here's what a real session looks like:
+
+```
+You: "build a pricing section with 3 tiers for my saas"
+
+Daemon thinks: frontend request --> routes to Hermione
+
+Hermione activates:
+  1. Checks for DESIGN.md in project root (design tokens)
+  2. Builds the component with Next.js + Tailwind + shadcn
+  3. Auto-Verify runs: typecheck ✓ lint ✓ build ✓
+  4. ProofShot captures screenshot (desktop + mobile)
+  5. Delivers component with visual proof
+
+You: "looks good, but add a toggle for monthly/yearly"
+
+Hermione updates the component, Auto-Verify runs again.
+
+You: "ship it"
+
+Daemon: suggests Minerva review before commit
+  Minerva Phase 1 (spec compliance): PASS
+  Minerva Phase 2 (code quality): PASS with notes - suggests extracting price config
+  You: "fix the note and commit"
+  Done. Committed with clean code.
 ```
 
-### 3. Copy skills to your Claude Code skills directory
-
-```bash
-cp -r daemon-orchestrator/skills/* ~/.claude/skills/
 ```
+You: "the checkout webhook is failing in production"
 
-### 4. Set up your memory system
+Daemon thinks: backend + security --> routes to Neville, flags Severus
 
-```bash
-mkdir -p ~/claude-memory
-cp daemon-orchestrator/memory/* ~/claude-memory/
+Neville investigates:
+  1. Reads errors.md (checks if this happened before)
+  2. Checks webhook handler code
+  3. Identifies missing signature validation
+  4. Fixes and adds test
+
+Severus auto-activates (webhook = sensitive):
+  Security audit: found 1 MEDIUM - webhook endpoint lacks rate limiting
+  Fix applied.
+
+Auto-Verify: all tests pass. Committed.
 ```
-
-### 5. Start Claude Code
-
-Claude will automatically load the CLAUDE.md and begin operating as Daemon.
-
-> **Note:** You'll need to customize the CLAUDE.md with your own project paths, MCP server configs, and personal preferences. The template includes comments showing where to customize.
 
 ---
 
@@ -238,23 +289,25 @@ memory/
 - Debugging solutions (the fix is in the code)
 - Ephemeral task details
 
+> **See [memory-example.md](docs/memory-example.md)** for a real-world example of what a filled memory system looks like after a few weeks of use.
+
 ---
 
 ## MCP Integrations
 
-Daemon connects to 17 MCP servers for real-world actions:
+Daemon connects to MCP servers for real-world actions. See **[MCP config examples](docs/mcp-config-example.md)** for setup commands.
 
-| MCP | Purpose |
-|-----|---------|
-| **Supabase** (multiple) | Database, Auth, Storage, Edge Functions per project |
-| **Obsidian** | Personal knowledge base, notes, agenda |
-| **Figma** | Read designs, generate diagrams, Code Connect |
-| **PostHog** | Analytics, funnels, feature flags, experiments |
-| **Google Ads** | Campaign management via API |
-| **Browser** | Real browser via Playwright MCP for complex navigation |
-| **SSH** (multiple) | VPS deployment and server management |
-| **Unity** | Game development (editor integration) |
-| **Context7** | Up-to-date library documentation |
+| MCP | Purpose | Install |
+|-----|---------|---------|
+| **Supabase** | Database, Auth, Storage, Edge Functions | `claude mcp add supabase-myapp ...` |
+| **Browser** | Real browser via Playwright for complex navigation | `claude mcp add browser ...` |
+| **Figma** | Read designs, generate diagrams, Code Connect | `claude mcp add figma ...` |
+| **SSH** | VPS deployment and server management | `claude mcp add ssh-prod ...` |
+| **PostHog** | Analytics, funnels, feature flags | `claude mcp add posthog ...` |
+| **Context7** | Up-to-date library documentation | `claude mcp add context7 ...` |
+| **Obsidian** | Personal knowledge base, notes | `claude mcp add obsidian ...` |
+
+> You can add multiple instances per type (e.g., `supabase-projecta`, `supabase-projectb`, `ssh-staging`, `ssh-production`)
 
 ---
 
@@ -339,6 +392,8 @@ daemon-orchestrator/
     daemon-banner.svg          # Banner image
     architecture.md            # Detailed architecture docs
     customization.md           # How to customize for your workflow
+    mcp-config-example.md      # MCP server setup commands
+    memory-example.md          # What a filled memory system looks like
 ```
 
 ---

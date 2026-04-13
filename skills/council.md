@@ -1,3 +1,21 @@
+---
+name: council
+description: Decision panel with multi-perspective debate - quick, duo, or full mode
+triggers:
+  - what do you think
+  - should I
+  - is it worth
+  - A or B
+  - which option
+  - trade-off
+  - dilemma
+  - decision
+modes:
+  quick: 2 rounds, 3-4 voices (technical)
+  duo: 2 opposing characters (binary choice)
+  full: 6-8 voices (strategic)
+---
+
 # Council - Decision Panel
 
 > 12-character debate panel for making decisions. Provides multi-perspective analysis.

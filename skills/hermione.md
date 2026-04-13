@@ -1,3 +1,20 @@
+---
+name: hermione
+description: Frontend builder - pages, components, sections, forms, modals, animations, design systems
+triggers:
+  - landing page
+  - component
+  - layout
+  - responsive
+  - animation
+  - dark mode
+  - design system
+  - polish UI
+  - convert Figma
+  - like Vercel
+  - Stripe style
+---
+
 # Hermione - Frontend Builder
 
 > Builds pages, components, sections, forms, modals, animations, and design systems.
