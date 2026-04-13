@@ -549,14 +549,65 @@ Being honest about what this system can't do:
 
 ---
 
-## Inspiration
+## How Daemon Compares
 
-Built independently, arriving at similar conclusions as:
-- [Harness Engineering](https://www.anthropic.com/engineering/managed-agents) (Anthropic)
-- [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) (agent harness optimization)
-- [wshobson/agents](https://github.com/wshobson/agents) (modular plugin architecture)
+Honest comparison against trending Claude Code setups and agent frameworks. Every "better" and "worse" is relative to use case, not a universal claim.
+
+| Feature | Daemon | claude-mem | Karpathy Skills | Ralph | Archon |
+|---------|--------|-----------|----------------|-------|--------|
+| **Memory system** | Full file-based (errors, learnings, decisions, session state) | Auto + vector memory | None | None | None |
+| **Skill routing** | 17 skills, context-based auto-routing | None | Manual | None | YAML-defined agents |
+| **Quality gates** | 3 protocols (Auto-Verify, Auto-Review, Circuit Breaker) | None | Goal criteria | None | Deterministic pipelines |
+| **Acceptance criteria** | Required before every build task | None | Core principle | None | Baked into pipeline |
+| **Fresh context protocol** | Yes (per-phase clean context for long work) | No | No | Yes (per-iteration) | Partial |
+| **Hooks enforcement** | Documented (settings.json hooks guide) | No | No | No | No |
+| **UI-SPEC gate** | Yes (pre-build contract for frontend) | No | No | No | No |
+| **Setup complexity** | Medium (markdown files + customization) | Low (npm install) | Low (copy skills) | High (runtime setup) | High (self-hosted) |
+| **Claude Code native** | Yes (pure CLAUDE.md + skills) | Yes | Yes | Partial | No (separate runtime) |
+| **Customizable** | High (delete/rename anything) | Low | Medium | Low | Medium |
+
+### Where others are better
+
+Being honest here builds trust:
+
+- **claude-mem** has automatic vector memory that works without any manual maintenance. Daemon's memory is file-based and requires you to maintain it. If you want zero-maintenance memory, claude-mem wins.
+- **Karpathy's approach** treats goal-driven execution as the central principle, not one gate among many. If you want a purer version of "define success before starting", study his skills repo.
+- **Ralph** has a more mature fresh-context/iteration model for long autonomous work. Daemon's `protocols/fresh-context.md` was directly inspired by Ralph.
+- **Archon** offers a visual UI and self-hosted setup with more deterministic agent pipelines. If you need a team-facing interface, Archon is worth evaluating.
+
+### Where Daemon is stronger
+
+- The combination of memory + routing + quality gates in a single unified system is unique. Most alternatives pick one or two of these.
+- 17 battle-tested skills covering the full workflow (build, review, research, business, decisions) versus most repos offering 3-5 skills.
+- The skill files are the actual content Claude reads — no hidden logic, fully auditable and customizable.
+
+---
+
+## Inspired By
+
+Each of these repos contributed a specific insight that shaped Daemon:
+
+| Repo / Resource | What we learned |
+|----------------|----------------|
+| [Karpathy's Claude skills](https://github.com/karpathy) | Goal-Driven Execution: define success criteria before any task. Now the Acceptance Criteria Gate in section 3.6. |
+| [Ralph (iterative agent)](https://github.com/badass-courses/ralph) | Clean context per iteration. Persistent artifacts over conversation history. Now `protocols/fresh-context.md`. |
+| [claude-code-best-practice](https://github.com/grahama1970/claude-code-best-practice) | Using `settings.json` hooks to enforce protocols at the platform level, not just instruction level. Now `docs/hooks-setup.md`. |
+| [Harness Engineering](https://www.anthropic.com/engineering/managed-agents) (Anthropic) | The "harness" mental model: your job is to build the structure that guides AI, not to prompt it every time. |
+| [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) | Agent harness optimization patterns. |
+| [wshobson/agents](https://github.com/wshobson/agents) | Modular plugin architecture for agent skills. |
 
 If you want more **modular, plugin-based** approaches, check those repos. If you want an **opinionated, integrated template** you can customize, that's what Daemon is.
+
+---
+
+## New in This Version
+
+Recent improvements based on competitive analysis:
+
+- **Acceptance Criteria Gate** (CLAUDE.md §3.6) — Required WHAT/SUCCESS/OUT-OF-SCOPE before any build task
+- **UI-SPEC Gate** (CLAUDE.md §3.7) — Frontend pre-build contract for new pages and features. See [`docs/ui-spec-guide.md`](docs/ui-spec-guide.md)
+- **Hooks Setup Guide** ([`docs/hooks-setup.md`](docs/hooks-setup.md)) — How to use `settings.json` hooks so protocols are enforced, not just instructed
+- **Fresh Context Protocol** ([`protocols/fresh-context.md`](protocols/fresh-context.md)) — Per-phase clean context for long autonomous work
 
 ---
 

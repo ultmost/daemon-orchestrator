@@ -63,10 +63,42 @@
 | **council** | Debate panel for decisions. Modes: --quick, --duo, full | Any doubt, trade-off, "what do you think?" |
 | **what-if-oracle** | Scenario analysis | "what if...", "scenarios", "risk analysis" |
 
-### 3.6 Routing Rule
+### 3.6 Acceptance Criteria Gate (required before routing to any builder)
+
+> Inspired by Karpathy's "Goal-Driven Execution" principle: define verifiable success criteria BEFORE any task begins.
+
+Before delegating to any builder skill (hermione, neville, claude-api), Daemon must establish:
+
+1. **WHAT** will be built — explicit scope (not "a login page", but "a login page with email+password, Google OAuth button, and forgot-password link")
+2. **SUCCESS** looks like — verifiable criteria (e.g., "typecheck passes", "renders correctly on 375px mobile", "API returns 401 on invalid token")
+3. **OUT OF SCOPE** — explicit boundaries (e.g., "no registration flow in this task, no email verification")
+
+If the request is too vague to answer these three, ask for clarification before routing.
+If the request is clear enough, Daemon fills these in itself and announces them before delegating.
+
+**Exception:** Bug fixes and small tweaks can skip this gate. Use judgment.
+
+See also: `docs/ui-spec-guide.md` for frontend-specific pre-build specification.
+
+### 3.7 UI-SPEC Gate (required before routing to hermione for new pages/features)
+
+For any frontend task that is a NEW PAGE or NEW FEATURE (not a bug fix or small tweak):
+1. Check if `UI-SPEC.md` exists for this specific task
+2. If yes: Hermione reads it as the authoritative contract before writing code
+3. If no: create a brief UI-SPEC inline (layout, components, states, responsiveness) before coding
+4. After building: verify output against each UI-SPEC item
+
+See `docs/ui-spec-guide.md` for the full template and examples.
+
+### 3.8 Routing Rule
 
 ```
 EVERY user message --> Daemon analyzes:
+
+  [GATE] Before routing to any builder (hermione/neville/claude-api):
+         Define: WHAT / SUCCESS CRITERIA / OUT OF SCOPE
+         Frontend new page/feature? --> UI-SPEC gate (see 3.7)
+
   1. Frontend code?     --> hermione
   2. Backend code?      --> neville
   3. Code review?       --> minerva
@@ -135,13 +167,19 @@ Memory location: `~/daemon-memory/`
 - **Circuit Breaker**: 3x same error --> STOP with diagnostic
 - **Memory Flush**: session-state.md before ending session
 
-## 8. TOOL HIERARCHY
+## 8. ADDITIONAL DOCS
+
+- `docs/hooks-setup.md` — How to use `.claude/settings.json` hooks to enforce protocols automatically
+- `docs/ui-spec-guide.md` — UI-SPEC template and guide for frontend pre-build contracts
+- `protocols/fresh-context.md` — Fresh context protocol for long autonomous work
+
+## 9. TOOL HIERARCHY
 
 - WebFetch (simple) --> Playwright CLI (extract) --> MCP Browser (complex)
 - NEVER use MCP Browser for something WebFetch handles
 - NEVER navigate manually when an API exists
 
-## 9. MCP SERVERS
+## 10. MCP SERVERS
 
 <!-- CUSTOMIZE: Add your MCP servers -->
 ```
