@@ -41,6 +41,68 @@ This system was built iteratively over months of daily use shipping real product
 
 ---
 
+## Architecture
+
+```
+┌─────────────────────────────────────────────────┐
+│                  CLAUDE.md                       │
+│  (system instructions loaded every session)      │
+│                                                  │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
+│  │ Routing  │  │Protocols │  │ Memory   │      │
+│  │ Table    │  │ Rules    │  │ Location │      │
+│  └──────────┘  └──────────┘  └──────────┘      │
+└──────────────────────┬──────────────────────────┘
+                       │ loads
+          ┌────────────┼────────────┐
+          │            │            │
+    ┌─────┴─────┐ ┌───┴────┐ ┌────┴─────┐
+    │  Skills   │ │Protocol│ │  Memory  │
+    │  (.md)    │ │ (.md)  │ │  (.md)   │
+    │           │ │        │ │          │
+    │ hermione  │ │ verify │ │ errors   │
+    │ neville   │ │ review │ │ learnings│
+    │ minerva   │ │ circuit│ │ session  │
+    │ severus   │ │ flush  │ │ decisions│
+    │ ...       │ │        │ │          │
+    └───────────┘ └────────┘ └──────────┘
+          │
+          │ may use
+          v
+    ┌───────────┐
+    │MCP Servers│
+    │ (optional)│
+    │           │
+    │ supabase  │
+    │ browser   │
+    │ figma     │
+    │ ssh       │
+    │ ...       │
+    └───────────┘
+```
+
+Everything is markdown files. There's no hidden runtime, no background process, no binary. Claude Code reads them as instructions and follows them.
+
+---
+
+## Lite vs Full
+
+Not every developer needs all 17 skills. Here's how to choose:
+
+| | Lite Mode | Full Mode |
+|---|---|---|
+| **Skills** | 5 core skills | 17 skills |
+| **Setup time** | ~10 minutes | ~30 minutes |
+| **MCPs required** | None | Optional (browser, Supabase, etc.) |
+| **Best for** | Solo devs, focused projects, getting started | Teams, multiple projects, full workflow |
+| **Covers** | Frontend + backend build, code review, security, decisions | Everything in Lite + research, ads, social, PDFs, QA, study |
+
+**Lite setup:** See [docs/minimal-setup.md](docs/minimal-setup.md) — 5 skills, no MCPs, works today.
+
+**Full setup:** Follow the Quick Start below.
+
+---
+
 ## Skills
 
 Skills are `.md` files with frontmatter (triggers, description) that define how Claude should handle specific types of work.
@@ -248,6 +310,8 @@ Everything is markdown files. There's no hidden runtime, no background process, 
 
 ## Quick Start
 
+> **New here? Read [docs/first-30-minutes.md](docs/first-30-minutes.md) first.** It walks you through setup, customization, and verifying it works — step by step, minute by minute.
+
 ### Install
 
 ```bash
@@ -365,6 +429,49 @@ See **[MCP config examples](docs/mcp-config-example.md)** for copy-paste setup c
 | **Context7** | Up-to-date library docs | Any skill needing current docs |
 
 > Without MCPs, skills still work for code generation and review. They just can't interact with external services.
+
+---
+
+## How to Know It's Working
+
+When the system is correctly set up and running, you'll see these signs:
+
+**Routing is happening:**
+- Claude mentions the skill before starting ("This is a frontend task — activating Hermione...") or shifts into skill-specific structured behavior without prompting
+- Asking "build me a navbar" produces a response that follows Hermione's rules (asks about stack if unknown, produces TypeScript + Tailwind by default, runs typecheck after)
+- Asking "should we use Postgres or SQLite?" activates Council mode with multiple perspectives, not a single direct answer
+
+**Memory is working:**
+- At session start, Claude references your active projects without you telling it again
+- Before coding, Claude says something like "checking errors.md first..." and references past mistakes
+- At session end (or when you say "flush session state"), Claude writes a summary to `~/daemon-memory/session-state.md`
+
+**Quality gates are running:**
+- After Hermione or Neville builds something, Claude runs typecheck + lint without being asked
+- Before Claude declares anything "done", Minerva's review happens automatically
+- When touching auth or payment code, Severus activates without being prompted
+
+**Common failure modes and fixes:**
+
+| Symptom | Likely cause | Fix |
+|---------|-------------|-----|
+| Claude responds generically, no skill language | CLAUDE.md not loaded or path wrong | Run `ls ~/.claude/CLAUDE.md`. If missing, re-run `setup.sh` |
+| Claude asks "what stack are you using?" every session | MEMORY.md not filled in | Add your stack to `~/daemon-memory/MEMORY.md` |
+| Auto-Verify never runs | Protocol not referenced in CLAUDE.md | Check section 7 in `~/.claude/CLAUDE.md` lists Auto-Verify |
+| Skill activates but ignores its rules | Skill file not in the right path | Check `~/.claude/skills/daemon/` has the `.md` files |
+| Memory lost between sessions | Memory flush not running | At session end, say "flush memory state" explicitly |
+| Claude mixes up two projects | Project isolation not configured | Add explicit project sections to CLAUDE.md section 6 |
+
+**Quick diagnostic — type this in any session:**
+
+```
+what are your current routing rules and what skill would you use for:
+1) building a login page
+2) reviewing an API route
+3) deciding between two database options
+```
+
+Claude should answer: Hermione, Minerva, Council. If it doesn't, check that CLAUDE.md is loaded correctly.
 
 ---
 

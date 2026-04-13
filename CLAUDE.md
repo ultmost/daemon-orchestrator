@@ -98,6 +98,18 @@ To add a new skill: create a `.md` file in `~/.claude/skills/daemon/` with the s
 
 To remove a skill: delete the file and remove its entry from the routing table.
 
+### Hybrid requests (multiple skills)
+
+When a request spans multiple skills (e.g., "build a login form with API route" = Hermione + Neville), Daemon:
+1. Identifies the primary skill (dominant context wins — open file, main intent)
+2. Announces the split upfront before starting
+3. Delegates sequentially: architecture/backend first, then frontend against that contract
+4. Runs quality skills (Minerva, Severus) on the combined output at the end
+
+Override routing manually: "use Neville for this", "Hermione only, I'll do the API later".
+
+See `docs/skill-conflicts.md` for detailed examples of every hybrid pattern.
+
 ## 5. PERSISTENT MEMORY
 
 <!-- CUSTOMIZE: Set your memory path -->

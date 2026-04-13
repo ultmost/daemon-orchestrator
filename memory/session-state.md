@@ -4,21 +4,29 @@
 > Read at the START of every session to resume context.
 
 ## Last Session
-- **Date**: [DATE]
-- **Focus**: [what was worked on]
+- **Date**: 2026-04-12
+- **Focus**: Launchpad - subscription billing flow
 
 ## Currently Working On
-- [task description and current status]
+- Billing portal: Stripe Customer Portal integration. Backend route done (`/api/billing/portal`), frontend button wired, but redirect URL in Stripe dashboard still points to localhost. Need to update to production URL before testing.
+- Petro Landing: client approved copy changes. Need to swap hero section text and update the CTA color from slate to amber.
 
 ## Pending Items
-- [ ] [item 1]
-- [ ] [item 2]
+- [ ] Update Stripe Customer Portal return URL to `https://launchpad.app/dashboard/billing`
+- [ ] Petro hero text swap (copy is in the Notion doc the client shared)
+- [ ] Minerva review on billing route before merge
+- [ ] Write Supabase migration for `subscription_status` column (discussed but not done yet)
+- [ ] Test Stripe webhook locally with `stripe listen` before pushing billing changes
 
 ## Decisions Made Recently
-- [decision with context]
+- Chose Stripe Customer Portal over building custom billing UI. Saves 2 weeks and Stripe handles edge cases better.
+- Petro: staying on static Next.js, no Supabase. Client has no need for dynamic content.
 
 ## Blockers
-- [anything blocking progress]
+- Stripe Customer Portal redirect URL needs prod domain. Launchpad not on custom domain yet (still on vercel.app). Decided to use vercel.app URL for now.
 
 ## Next Session Should
-- [first thing to do when resuming]
+- Start with Stripe Customer Portal URL fix (5 min task, unblocks billing)
+- Then Petro hero copy swap
+- Billing route is at `src/app/api/billing/portal/route.ts`
+- Petro hero component is at `src/components/sections/Hero.tsx`
