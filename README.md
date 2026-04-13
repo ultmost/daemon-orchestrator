@@ -312,7 +312,15 @@ Everything is markdown files. There's no hidden runtime, no background process, 
 
 > **New here? Read [docs/first-30-minutes.md](docs/first-30-minutes.md) first.** It walks you through setup, customization, and verifying it works — step by step, minute by minute.
 
-### Install
+### Option A: Plugin Install (recommended)
+
+```bash
+/plugin install daemon-orchestrator@ultmost
+```
+
+This installs skills, protocols, and memory templates through Claude Code's native plugin system.
+
+### Option B: Manual Install
 
 ```bash
 git clone https://github.com/ultmost/daemon-orchestrator.git
