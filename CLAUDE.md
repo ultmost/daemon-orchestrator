@@ -30,6 +30,7 @@
 | **hermione** | Frontend builder. Pages, components, CSS, animations, design system | Any UI request |
 | **neville** | Backend builder. APIs, database, migrations, auth, Docker, VPS | Any backend request |
 | **claude-api** | Apps with Claude API / Anthropic SDK | Code importing `anthropic` SDK |
+| **web-design-engineer** | Visual web artifacts (landing pages, decks, prototypes, dashboards) | "make a landing page", "HTML deck", "interactive prototype" |
 
 ### 3.2 Quality Skills (who VERIFIES)
 
@@ -62,6 +63,15 @@
 |-------|-------------|--------------|
 | **council** | Debate panel for decisions. Modes: --quick, --duo, full | Any doubt, trade-off, "what do you think?" |
 | **what-if-oracle** | Scenario analysis | "what if...", "scenarios", "risk analysis" |
+| **prd** | Product Requirements Document generator | "PRD", "feature spec", "user stories", "acceptance criteria" |
+| **writing-plans** | Detailed implementation plan from PRD/spec (file structure + bite-sized tasks) | After PRD approved + 3+ files touched |
+
+### 3.5.1 Architecture / Diagnostics
+
+| Skill | What it does | When to call |
+|-------|-------------|--------------|
+| **architect** | Finds DEEPENING opportunities (shallow -> deep modules). Refactor proposals. | "refactor", "improve architecture", "shallow module", "hard to test" |
+| **diagnose** | Disciplined investigation of bugs, persistent errors, perf regressions. Builds feedback loop BEFORE proposing cause. | "broken", "doesn't work", "regression", "slow", "fix didn't work" |
 
 ### 3.6 Acceptance Criteria Gate (required before routing to any builder)
 
@@ -99,21 +109,41 @@ EVERY user message --> Daemon analyzes:
          Define: WHAT / SUCCESS CRITERIA / OUT OF SCOPE
          Frontend new page/feature? --> UI-SPEC gate (see 3.7)
 
-  1. Frontend code?     --> hermione
-  2. Backend code?      --> neville
-  3. Code review?       --> minerva
-  4. Security?          --> severus
-  5. Quick research?    --> dobby
-  6. Deep research?     --> hedwig
-  7. Competitor spy?    --> george
-  8. Own ads/traffic?   --> fred
-  9. Decision?          --> council
-  10. Scenario?         --> what_if_oracle
-  11. Social media?     --> rita_skeeter
-  12. PDF/document?     --> lucius
-  13. Study?            --> lupin
-  14. No skill covers?  --> Daemon acts directly
+  1. Frontend code?         --> hermione
+  2. Backend code?          --> neville
+  3. Visual web artifact?   --> web-design-engineer
+  4. Code review?           --> minerva
+  5. Security?              --> severus
+  6. Bug/regression/broken? --> diagnose
+  7. Refactor/architecture? --> architect
+  8. Need a PRD?            --> prd
+  9. Plan an implementation?--> writing-plans
+  10. Quick research?       --> dobby
+  11. Deep research?        --> hedwig
+  12. Competitor spy?       --> george
+  13. Own ads/traffic?      --> fred
+  14. Decision?             --> council
+  15. Scenario?             --> what_if_oracle
+  16. Social media?         --> rita_skeeter
+  17. PDF/document?         --> lucius
+  18. Study?                --> lupin
+  19. No skill covers?      --> Daemon acts directly
 ```
+
+### 3.9 Verification Subagents (Agent tool, not Skill)
+
+These run in isolated context, in parallel. They do NOT appear in the Skill list - they live in `~/.claude/agents/`.
+
+| Subagent | File | When to spawn |
+|---|---|---|
+| **reviewer** | `agents/reviewer.md` | Post-build, "review code", "before commit". AUTOMATIC via Auto-Review |
+| **security** | `agents/security.md` | "security", "vulnerability", "pentest". AUTOMATIC if build touches auth/webhook/payment/RLS |
+| **qa** | `agents/qa.md` | "test everything", "QA", "health check", "smoke test", "e2e" |
+| **researcher** | `agents/researcher.md` | "deep dive", "compare", "benchmark", "inspiration" |
+
+After any build (hermione/neville), spawn in PARALLEL via Agent tool:
+-> reviewer + security + qa + proofshot (4 simultaneous subagents)
+-> Results return together, without polluting main context
 
 ## 4. HOW SKILLS WORK
 
@@ -151,6 +181,7 @@ Memory location: `~/daemon-memory/`
 - Read `errors.md` and `learnings.md` BEFORE any technical task
 - Read `session-state.md` for pending items from previous sessions
 - Flush `session-state.md` MANDATORY before ending/compacting
+- **First-run check**: if `first-run-greeting.md` exists in the memory folder, read it and follow the greeting protocol on the very next user message, then delete the file.
 
 ## 6. PROJECT ISOLATION
 
